@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('usuarios.urls')),
     path('auth/', include('usuarios.urls')),
     path('hall/', include('hall.urls')),
+    path('produto/', include('hall.urls'))
 ]
 
 handler404 = usuarios.views.handler404
