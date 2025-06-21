@@ -21,9 +21,7 @@ import usuarios.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('usuarios.urls')),
-    path('auth/', include('usuarios.urls')),
-    path('hall/', include('hall.urls')),
-    path('produto/', include('hall.urls'))
+    path('produtos/', include('produtos.urls')),
 ]
 
 handler404 = usuarios.views.handler404

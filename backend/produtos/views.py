@@ -5,3 +5,5 @@ from .serializers import ProdutoSerializer
 class ProdutoListView(generics.ListAPIView):
     queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
+
+

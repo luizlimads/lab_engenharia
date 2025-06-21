@@ -5,5 +5,8 @@ Content-Type: application/json
 
 {
     "email": "admin@teste.com",
-    "password": "1234563"
+    "password": "123456"
 }
+
+####
+GET http://127.0.0.1:8000/produtos/all/ HTTP/1.1
