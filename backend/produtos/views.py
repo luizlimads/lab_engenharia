@@ -9,3 +9,7 @@ class ProdutoListView(generics.ListAPIView):
 class ProdutoCreateView(generics.CreateAPIView):
     queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
+class ProdutoDeleteView(generics.DestroyAPIView):
+    queryset = Produto.objects.all()
+    serializer_class = ProdutoSerializer
+    lookup_field = 'id'

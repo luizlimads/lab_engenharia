@@ -24,5 +24,4 @@ urlpatterns = [
     path('produtos/', include('produtos.urls')),
 ]
 
-handler404 = usuarios.views.handler404
 
