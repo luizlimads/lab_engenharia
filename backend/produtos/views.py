@@ -1,22 +1,7 @@
-from django.views.decorators.http import require_http_methods
+from rest_framework import generics
 from .models import Produto
+from .serializers import ProdutoSerializer
 
-@require_http_methods('POST')
-def view(request):
-    pass
-
-@require_http_methods('POST')
-def view_all(request):
-    pass
-
-@require_http_methods('POST')
-def add(request):
-    pass
-
-@require_http_methods('POST')
-def rm(request):
-    pass
-
-@require_http_methods('POST')
-def put(request):
-    pass
+class ProdutoListView(generics.ListAPIView):
+    queryset = Produto.objects.all()
+    serializer_class = ProdutoSerializer

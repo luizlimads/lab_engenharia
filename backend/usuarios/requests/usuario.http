@@ -7,5 +7,3 @@ Content-Type: application/json
     "email": "admin@teste.com",
     "password": "1234563"
 }
-
-
