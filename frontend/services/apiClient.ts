@@ -8,7 +8,7 @@ interface ApiOptions extends Omit<RequestInit, 'headers'> {
 const isProd = process.env.NODE_ENV === 'production';
 const BASE_URL = isProd
   ? 'https://api.yourdomain.com'
-  : 'http://localhost:3000';
+  : 'http://localhost:8000';
 
 export async function apiClient(
   path: string,
