@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "proxy": "http://localhost:3000",
+  "proxy": "http://localhost:8000",
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
     "@radix-ui/react-collapsible": "^1.1.11",
