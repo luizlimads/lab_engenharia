@@ -1,70 +1,47 @@
-# Backend
+# Tik Stock
 
-Desenvolvido com [Django](https://www.djangoproject.com/).
+Trabalho da disciplina de Laboratório de Engenharia de Software da Fatec São Paulo.
 
-## Requisitos
+Integrantes:
 
-- Python 3
+- Adão
+- David
+- Lais
+- [Luiz](https://github.com/luizlimads)
+- [Mariana Alves](https://github.com/Mariana4Alves)
+- [Renan Henrique](https://github.com/rbcHenrique)
 
-## Configuração do ambiente
+## Sobre o Projeto
 
-### Crie um ambiente virtual
+<details>
+<summary>Escopo do Trabalho</summary>
 
-#### Windows (PowerShell)
+1. Da empresa em que será desenvolvido o sistema:
+   1. Apresentação e Histórico da Empresa.
+   1. Organograma da Empresa.
+   1. Missão da Empresa.
+   1. Funções terceirizadas da Empresa.
+   1. Objetivos e funções das Áreas de negócios da Empresa.
+   1. Número de Funcionários em cada área de negócio.
+   1. Faturamento anual.
+1. Da área de informática:
+   1. Descrição dos procedimentos existentes para manutenção e/ou requisição de um novo sistema.
+   1. Descrição da Infraestrutura tecnológica existente.
+   1. Descrição dos softwares existentes (sistemas aplicativos, sistema operacional, banco de dados, linguagem de programação, etc.).
+   1. Apresentação de Empresas terceirizadas (se houver). Qual(is) a(s) prestação de serviços. Definição de procedimentos com base no ITIL e SLA, detalhando a necessidade dos serviços a serem fornecidos para a operação do sistema que será desenvolvido.
+1. Do sistema (novo):
+   1. Definição do Escopo do Sistema com base no PMBok.
+   1. Definição do Cronograma de Desenvolvimento do Sistema.
+   1. Descrever como será elicidação dos Requisitos do Sistema. Quais técnicas serão utilizadas com justificativas.
+   1. Definição e documentação dos Requisitos Funcionais do Sistema.
+   1. Definição e documentação dos Requisitos Não Funcionais do Sistema.
+   1. Definição e documentação dos Requisitos de Domínio.
+   1. Definição das interfaces do sistema (com base na usabilidade e com justificativa, item a ser desenvolvido somente na 2ª. Fase).
+   1. Documentação do sistema desenvolvido (programas fontes e o que for necessário para executar o sistema).
+   1. Procedimentos descritivos de testes do sistema.
+   1. Manual de operação do sistema.
+   1. Manual de treinamento do sistema.
+   1. Como será executado a homologação (aprovação) do sistema.
 
-```powershell
-python -m venv venv
-venv\Scripts\Activate.ps1
-```
+</details>
 
-> Para desativar o ambiente virtual, execute `deactivate` no terminal.
-
-#### macOS ou Linux
-
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-### Instale as dependências
-
-```bash
-pip install -r requirements.txt
-```
-
-## Executando o projeto
-
-### 1. Execute as migrações do banco de dados
-
-```bash
-python manage.py migrate
-```
-
-### 2. Crie um superusuário (opcional, para acessar o admin)
-
-```bash
-python manage.py createsuperuser
-```
-
-### 3. Rode o servidor de desenvolvimento
-
-```bash
-python manage.py runserver
-```
-
-O projeto estará disponível em [http://localhost:8000](http://localhost:8000)
-
-## Outros comandos úteis
-
-### Aplicar novas migrações (caso altere modelos)
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-### Acessar o shell interativo do Django
-
-```bash
-python manage.py shell
-```
