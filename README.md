@@ -45,3 +45,7 @@ Integrantes:
 
 </details>
 
+Exemplos de requests no arquivo requests.http
+
+Necessario extensão Rest Client
+https://marketplace.visualstudio.com/items?itemName=humao.rest-client
