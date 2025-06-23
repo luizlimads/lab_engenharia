@@ -1,28 +1,23 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { ColumnDef } from '@tanstack/react-table';
-import { format } from 'date-fns';
 import { ArrowUpDown } from 'lucide-react';
-import { InventoryActions } from './inventory-actions';
 
-export const columns: ColumnDef<any>[] = [
+export interface LowInventoryProduct {
+  id: number;
+  name: string;
+  barcode: string;
+  unit: string;
+  category: string;
+  minQuantity: number;
+  currentQuantity: number;
+}
+
+export const minQuantityColumns: ColumnDef<LowInventoryProduct>[] = [
   {
-    accessorKey: 'id',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="font-bold"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          ID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: 'product.name',
+    accessorKey: 'name',
     header: ({ column }) => {
       return (
         <Button
@@ -34,12 +29,9 @@ export const columns: ColumnDef<any>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => {
-      return row.original.product?.name || 'N/D';
-    },
   },
   {
-    accessorKey: 'product.category',
+    accessorKey: 'category',
     header: ({ column }) => {
       return (
         <Button
@@ -52,7 +44,7 @@ export const columns: ColumnDef<any>[] = [
       );
     },
     cell: ({ row }) => {
-      switch (row.original.product?.category) {
+      switch (row.original.category) {
         case 'perecivel':
           return 'Perecível';
         case 'nao_perecivel':
@@ -65,53 +57,56 @@ export const columns: ColumnDef<any>[] = [
     },
   },
   {
-    accessorKey: 'quantity',
+    accessorKey: 'currentQuantity',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           className="font-bold"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Quantidade
+          Estoque Atual
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const { quantity } = row.original;
-      const { unit } = row.original.product || {};
-      if (!unit) return `${quantity}`;
-      // Add "s" only if quantidade is not 1 and unidade doesn't already end with "s"
-      const suffix =
-        quantity !== 1 && !unit.endsWith('s') && unit !== 'kg' && unit !== 'L'
-          ? 's'
-          : '';
-      return `${quantity} ${unit}${suffix}`;
+      const quantity = row.original.currentQuantity;
+      const unit = row.original.unit;
+      return `${quantity} ${unit}`;
     },
   },
   {
-    accessorKey: 'expirationDate',
+    accessorKey: 'minQuantity',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           className="font-bold"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Validade
+          Quantidade Mínima
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const date = new Date(row.original.expirationDate);
-      return format(date, 'dd/MM/yy');
+      const minQuantity = row.original.minQuantity;
+      const unit = row.original.unit;
+      return `${minQuantity} ${unit}`;
     },
   },
   {
-    id: 'actions',
-    header: 'Ações',
+    accessorKey: 'status',
+    header: 'Status',
     cell: ({ row }) => {
-      return <InventoryActions inventory={row.original} />;
+      const currentQuantity = row.original.currentQuantity;
+      const minQuantity = row.original.minQuantity;
+
+      if (currentQuantity === 0) {
+        return <Badge variant="destructive">Sem estoque</Badge>;
+      } else if (currentQuantity < minQuantity) {
+        return <Badge variant="secondary">Estoque baixo</Badge>;
+      }
+      return <Badge variant="default">Normal</Badge>;
     },
   },
 ];
