@@ -3,10 +3,7 @@
 import { usePathname } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import {
-  Settings,
   ChevronDown,
-  User,
-  Shield,
   ChevronUp,
   User2,
   BookOpen,
@@ -16,6 +13,12 @@ import {
   ScanBarcode,
   List,
   Search,
+  Cylinder,
+  CircleX,
+  CircleCheck,
+  CirclePlus,
+  History,
+  Settings,
 } from 'lucide-react';
 
 import {
@@ -45,6 +48,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { AuthService } from '@/services/auth';
+import { ModeToggle } from '@/components/theme-toggle';
+import { Button } from '@/components/ui/button';
 
 interface SidebarMenuChild {
   title: string;
@@ -73,8 +78,10 @@ const items: SidebarMenuItemType[] = [
       { title: 'Listar', url: '/sistema/estoque', icon: List },
       { title: 'Pesquisar', url: '/sistema/estoque/pesquisar', icon: Search },
       {
-        title: 'Cadastrar', url: '/sistema/estoque/cadastrar',icon: ScanBarcode},
-      { title: 'Relatórios', url: '/sistema/estoque/relatorios', icon: BookOpen,},
+        title: 'Relatórios',
+        url: '/sistema/estoque/relatorios',
+        icon: BookOpen,
+      },
     ],
   },
   {
@@ -82,13 +89,24 @@ const items: SidebarMenuItemType[] = [
     url: '/sistema/movimentacoes',
     icon: ArrowRightLeft,
     children: [
-      { title: 'Compras', url: '/sistema/movimentacoes/compras', icon: List },
-      { title: 'Descarte', url: '/sistema/movimentacoes/descarte', icon: Search },
       {
-        title: 'Reabastecimento', url: '/sistema/movimentacoes/reabastecimento',icon: ScanBarcode},
-      { title: 'Saidas', url: '/sistema/movimentacoes/saidas', icon: BookOpen,},
+        title: 'Reabastecimento',
+        url: '/sistema/movimentacoes/reabastecimento',
+        icon: CirclePlus,
+      },
+      {
+        title: 'Consumo ou descarte',
+        url: '/sistema/movimentacoes/consumo',
+        icon: CircleX,
+      },
+
+      {
+        title: 'Histórico',
+        url: '/sistema/movimentacoes/historico',
+        icon: History,
+      },
     ],
-   },
+  },
 ];
 
 export function AppSidebar() {
@@ -119,7 +137,9 @@ export function AppSidebar() {
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton
                             className={`group/collapsible flex w-full items-center justify-between ${
-                              isParentActive ? 'bg-gray-100 font-semibold' : ''
+                              isParentActive
+                                ? 'bg-gray-100 font-semibold dark:bg-gray-700'
+                                : ''
                             }`}>
                             <div className="flex items-center gap-2">
                               <Icon className="h-4 w-4" />
@@ -140,7 +160,7 @@ export function AppSidebar() {
                                       href={child.url}
                                       className={`flex items-center gap-2 rounded px-2 py-1 ${
                                         isActive
-                                          ? 'bg-gray-200 font-semibold'
+                                          ? 'bg-gray-200 font-semibold dark:bg-gray-600'
                                           : ''
                                       }`}>
                                       <SubIcon className="h-4 w-4" />
@@ -164,7 +184,7 @@ export function AppSidebar() {
                         href={item.url}
                         className={`flex items-center gap-2 rounded px-2 py-1 ${
                           pathname === item.url
-                            ? 'bg-gray-100 font-semibold'
+                            ? 'bg-gray-100 font-semibold dark:bg-gray-700'
                             : ''
                         }`}>
                         <Icon className="h-4 w-4" />
@@ -180,13 +200,24 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        <div>
+          <ModeToggle />
+          <a href="/sistema/configuracoes">
+            <Button variant="outline" size="icon">
+              <Settings className="h-[1.2rem] w-[1.2rem]" />
+            </Button>
+          </a>
+        </div>
+
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   className={
-                    pathname.startsWith('/profile') ? 'bg-gray-100' : ''
+                    pathname.startsWith('/profile')
+                      ? 'bg-gray-100 font-semibold dark:bg-gray-700'
+                      : ''
                   }>
                   <User2 />
                   <span>{userEmail ?? 'Usuário desconhecido'}</span>

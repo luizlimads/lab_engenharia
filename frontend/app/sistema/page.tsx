@@ -3,100 +3,136 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Box, Package, CheckCircle, XCircle, Layers } from 'lucide-react';
+import { Box, Package, CheckCircle, XCircle, Layers, Snowflake, Milk, Bean } from 'lucide-react';
 import { apiClient } from '@/services/apiClient';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { DataTable } from './estoque/data-table';
+import { minQuantityColumns, LowInventoryProduct } from './estoque/minQuantityColumns';
 
 interface Overview {
-  total: number;
-  perishable: number;
-  nonPerishable: number;
-  valid: number;
-  expired: number;
+	quantidade_total_itens: number;
+	total_nomes_distintos: number;
+	quantidade_por_categoria: { categoria: string; qtd_distinta: number }[];
+	quantidade_validos: number;
+	quantidade_invalidos: number;
 }
 
 export default function ProdutosDashboard() {
-  const [overview, setOverview] = useState<Overview | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+	const [overview, setOverview] = useState<Overview | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+	// expiring and low inventory are not available in backend, set as empty
+	const [expiring, setExpiring] = useState<any[]>([]);
+	const [expiringLoading, setExpiringLoading] = useState(false);
+	const [expiringError, setExpiringError] = useState<string | null>(null);
+	const [lowInventoryProducts, setLowInventoryProducts] = useState<any[]>([]);
+	const [lowInventoryLoading, setLowInventoryLoading] = useState(false);
+	const [lowInventoryError, setLowInventoryError] = useState<string | null>(null);
+	const [days, setDays] = useState('7');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await apiClient('/api/inventory/summary', {
-          method: 'GET',
-        });
-        setOverview(data);
-      } catch (error) {
-        setError('Erro ao buscar produtos');
-        console.error('Erro ao buscar produtos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const data = await apiClient('/api/produtos/summary/', {
+					method: 'GET',
+				});
+				setOverview(data);
+			} catch (error) {
+				setError('Erro ao buscar produtos');
+				console.error('Erro ao buscar produtos:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchData();
+	}, []);
 
-    fetchData();
-  }, []);
+	// expiring and low inventory are not available, so skip fetching
 
-  if (loading) {
-    return (
-      <>
-        <h1 className="text-3xl font-bold">Visão geral</h1>
-        <div className="p-4">
-          <p>Carregando dados...</p>
-        </div>
-      </>
-    );
-  }
+	if (loading) {
+		return (
+			<>
+				<h1 className="text-3xl font-bold">Visão geral</h1>
+				<div className="p-4">
+					<p>Carregando dados...</p>
+				</div>
+			</>
+		);
+	}
 
-  if (error) {
-    return (
-      <>
-        <h1 className="text-3xl font-bold">Visão geral</h1>
-        <div className="p-4">
-          <Alert variant="destructive" className="flex items-center space-x-2">
-            <XCircle className="text-destructive h-5 w-5" />
-            <div>
-              <AlertTitle>Erro ao carregar</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </div>
-          </Alert>
-        </div>
-      </>
-    );
-  }
+	if (error) {
+		return (
+			<>
+				<h1 className="text-3xl font-bold">Visão geral</h1>
+				<div className="p-4">
+					<Alert variant="destructive" className="flex items-center space-x-2">
+						<XCircle className="text-destructive h-5 w-5" />
+						<div>
+							<AlertTitle>Erro ao carregar</AlertTitle>
+							<AlertDescription>{error}</AlertDescription>
+						</div>
+					</Alert>
+				</div>
+			</>
+		);
+	}
 
-  if (!overview) return null;
+	if (!overview) return null;
 
-  const cards = [
-    { title: 'Total de produtos', value: overview.total, icon: Package },
-    { title: 'Perecíveis', value: overview.perishable, icon: Box },
-    { title: 'Não perecíveis', value: overview.nonPerishable, icon: Layers },
-    {
-      title: 'Produtos para consumo',
-      value: overview.valid,
-      icon: CheckCircle,
-    },
-    { title: 'Produtos impróprios', value: overview.expired, icon: XCircle },
-  ];
+	// Map backend fields to cards
+	const cards = [
+		{
+			title: 'Total de itens',
+			value: overview.quantidade_total_itens,
+			icon: Package,
+		},
+		{
+			title: 'Produtos distintos',
+			value: overview.total_nomes_distintos,
+			icon: Layers,
+		},
+		{
+			title: 'Válidos',
+			value: overview.quantidade_validos,
+			icon: CheckCircle,
+		},
+		{
+			title: 'Vencidos',
+			value: overview.quantidade_invalidos,
+			icon: XCircle,
+		},
+		// Categoria breakdown (if available)
+		...(overview.quantidade_por_categoria || []).map((cat, idx) => ({
+			title: `Categoria: ${cat.categoria}`,
+			value: cat.qtd_distinta,
+			icon: Bean,
+		})),
+	];
 
-  return (
-    <>
-      <h1 className="text-3xl font-bold">Visão geral</h1>
-      <div className="grid h-100 grid-cols-2 gap-4 p-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-        {cards.map(({ title, value, icon: Icon }) => (
-          <Card
-            key={title}
-            className="flex h-[160px] w-[160px] flex-col justify-center p-5">
-            <Icon className="text-primary mb-2 h-5 w-5" />
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">
-                {title}
-              </p>
-              <p className="text-lg font-semibold">{value}</p>
-            </div>
-          </Card>
-        ))}
-      </div>
-    </>
-  );
+	return (
+		<>
+			<h1 className="text-3xl font-bold">Visão geral</h1>
+			<div className="block">
+				<div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+					{cards.map(({ title, value, icon: Icon }, idx) => (
+						<Card key={title + idx} className="flex min-h-[100px] flex-col justify-center p-3">
+							<Icon className="text-primary mb-1 h-4 w-4" />
+							<div>
+								<p className="text-muted-foreground text-xs leading-tight font-medium">{title}</p>
+								<p className="text-base font-semibold">{value}</p>
+							</div>
+						</Card>
+					))}
+				</div>
+			</div>
+			<h2 className="text-2xl font-semibold">Próximos ao vencimento</h2>
+			<div className="p-4">
+				<p>Não disponível.</p>
+			</div>
+			<h2 className="text-2xl font-semibold">Alertas de disponibilidade</h2>
+			<div className="p-4">
+				<p>Não disponível.</p>
+			</div>
+		</>
+	);
 }
